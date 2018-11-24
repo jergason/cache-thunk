@@ -14,25 +14,34 @@ This is painful, since every time I re-run the script, I wait for expensive slow
 ## Example
 
 ```javascript
-const cacheThunk = require('cache-thunk');
+const makeCacheThunk = require('cache-thunk');
 const fetch = require('node-fetch');
 
 const url = "http://example.com/giant-slow-request";
 const thunk = () => fetch(url).then(res => res.json());
+const cache = makeCacheThunk();
+
 // the first time this runs, it will make a request to http://example.com/giant-slow-request
 // and save the results to disk
 // the second time it runs, it'll just read the file from disk, so it should run
 // much faster!
-cacheThunk(url, thunk)
+cache(url, thunk)
   .then(results => console.log("got my data back!");
 ```
 
 
 ## API
 
-`cache-thunk` exports a single function with this signature:
+`cache-thunk` exports a cache creation function:
 
-`cacheThunk<(cacheKey, thunk[, cachePath])`
+`makeCache(cachePath, skipCache)`
+
+* `cachePath` - is the path to the directory where cache files will be written (defaults to `./cache`)
+* `skipCache` - if truthy, skip caching and just call the thunk. This can be useful if you want to wrap a bunch of functions in calls to your cache, and then hit the real backend without unwrapping them.
+
+The function returned from `makeCache` looks like this:
+
+`cacheThunk(cacheKey, thunk)`
 
 The TypeScript type would look like this:
 
@@ -42,10 +51,6 @@ The TypeScript type would look like this:
 
 * `cacheKey` - filename of the cache for this thunk. It'll be URL-encoded so it should be a valid file path
 * `thunk` - a function that takes no arguments and returns a promise. The results of this function will be `JSON.stringify`-d and saved to disk if the cache file isn't found
-* `cachePath` is the path to the directory where cache files will be written (defaults to `./cache`)
-
-### Disabling Caching
-If you want to turn off caching, you can set `cacheThunk.skipCache = true`. This can be useful if you want to wrap a bunch of functions in calls to `cacheThunk`, and then hit the real backend without unwrapping them.
 
 
 ## What is a thunk?

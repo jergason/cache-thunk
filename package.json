@@ -1,6 +1,6 @@
 {
   "name": "cache-thunk",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Cache a thunk to disk",
   "main": "index.js",
   "author": "Jamison Dance <hi@jamison.dance> (https://jamison.dance)",
