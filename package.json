@@ -2,11 +2,7 @@
   "name": "cache-thunk",
   "version": "1.0.0",
   "description": "Cache a thunk to disk",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc"
-  },
+  "main": "index.js",
   "author": "Jamison Dance <hi@jamison.dance> (https://jamison.dance)",
   "license": "MIT",
   "dependencies": {
@@ -14,9 +10,5 @@
   },
   "engines": {
     "node": ">= 8.2.1"
-  },
-  "devDependencies": {
-    "@types/node": "^10.12.10",
-    "typescript": "^3.1.6"
   }
 }
