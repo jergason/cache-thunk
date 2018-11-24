@@ -15,7 +15,7 @@ use like this:
     const results = await cacheThunk(url, () => fetch(url).then(res => res.json))
     // your results are now cached on disk at `cache/${url}/`, and will load from disk next time instead of running the thunk
 */
-module.exports = async function cacheThunk(
+async function cacheThunk(
   url,
   thunk,
   cachePath = path.join(__dirname, "..", "cache")
@@ -45,7 +45,11 @@ module.exports = async function cacheThunk(
     fs.writeFileSync(filePath, JSON.stringify(res));
     return res;
   }
-};
+}
 
+// set it to true to disable cache
+cacheThunk.skipCache = false;
+
+module.exports = cacheThunk;
 // set it to true to disable cache
 cacheThunk.skipCache = false;
