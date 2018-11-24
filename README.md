@@ -30,18 +30,26 @@ cacheThunk(url, thunk)
 
 ## API
 
-TypeScript definition if it helps:
-`cacheThunk<T>(cacheKey: string, thunk: () => Promise<T>, options?: { skipCache: boolean, cachePath: string } = { skipCache: false, cachePath: '../cache' }) : Promise<T>`
+`cache-thunk` exports a single function with this signature:
+
+`cacheThunk<(cacheKey, thunk[, cachePath])`
+
+The TypeScript type would look like this:
+
+`cacheThunk<T>(cacheKey: string, thunk: () => Promise<T>, cachePath?: string) : Promise<T>`
 
 `cacheThunk` looks for a cache file named `cacheKey`. If found, it'll skip executing the thunk and just return the contents of the file. If it doesn't find the cache file, it'll execute the thunk, write the resulting value in to the cache file, and then return the value.
 
 * `cacheKey` - filename of the cache for this thunk. It'll be URL-encoded so it should be a valid file path
 * `thunk` - a function that takes no arguments and returns a promise. The results of this function will be `JSON.stringify`-d and saved to disk if the cache file isn't found
-* `options` - an object with 
+* `cachePath` is the path to the directory where cache files will be written (defaults to `./cache`)
+
+### Disabling Caching
+If you want to turn off caching, you can set `cacheThunk.skipCache = true`. This can be useful if you want to wrap a bunch of functions in calls to `cacheThunk`, and then hit the real backend without unwrapping them.
 
 
 ## What is a thunk?
 A [thunk](https://en.wikipedia.org/wiki/Thunk) is a function that takes no arguments that someone else runs for you. It lets you hand someone else a function for them to execute later. Since it takes no arguments, anyone can execute it! This is useful for delaying computation or side-effects until later, or letting someone wrap operations around the function, like in our case.
 
-Thunks show up in React's [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) hook - the function you pass to `useEffect` is a thunk. React will call your thunk for you at the right time, delaying executing the side-effect until
+Thunks show up in React's [`useEffect`](https://reactjs.org/docs/hooks-reference.html#useeffect) hook - the function you pass to `useEffect` is a thunk. React will call your thunk for you at the right time, executing the side-effect until
 

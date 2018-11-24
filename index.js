@@ -18,18 +18,14 @@ use like this:
 module.exports = async function cacheThunk(
   url,
   thunk,
-  options = {
-    skipCache: false,
-    cachePath: path.join(__dirname, "..", "cache")
-  }
+  cachePath = path.join(__dirname, "..", "cache")
 ) {
-  if (!options.cachePath) {
+  if (!cachePath) {
     throw new Error("Must provide a cache path!");
   }
-  const cachePath = options.cachePath;
 
   // skip caching if we have opted out
-  if (options.skipCache) {
+  if (this.skipCache) {
     return thunk();
   }
 
@@ -50,3 +46,6 @@ module.exports = async function cacheThunk(
     return res;
   }
 };
+
+// set it to true to disable cache
+cacheThunk.skipCache = false;
