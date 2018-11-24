@@ -2,22 +2,25 @@ const fs = require("fs");
 const path = require("path");
 const mkdirp = require("mkdirp");
 
-type Options = {
+interface Options {
   skipCache?: boolean;
   cachePath: string;
-};
+}
 
-// cacheThunk takes in a cache key and a function that returns a promise (a thunk)
-// it will check on disk for a file matching url
-// if found, it will return a promise resolving to that file
-// if not, it will run the thunk, resolve the promise it returns, write the promise to a cache file at url, and then return the promise result
-// this is useful for doing quick data exploration where you quickly iterate on the data-munging code, but don't want to wait for requests to finish every time
-// use like this:
-//    const url = "https://example.com/slow-api-request"
-//    const results = await cacheThunk(url, () => fetch(url).then(res => res.json))
-//    // your results are now cached on disk at `cache/${url}/`, and will load from disk next time instead of running the thunk
-// why a thunk? because we need to control when it gets evaluated!
-module.exports = async function cacheThunk<T>(
+/*
+ cacheThunk takes in a cache key and a function that returns a promise (a thunk)
+
+ It will check on disk for a file matching the cache key.
+ If found, it will return a promise resolving to that file.
+ If not, it will run the thunk, resolve the promise it returns, write the promise to a cache file at url, and then return the promise result.
+
+ This is useful for doing quick data exploration where you quickly iterate on the data-munging code, but don't want to wait for requests to finish every time
+use like this:
+    const url = "https://example.com/slow-api-request"
+    const results = await cacheThunk(url, () => fetch(url).then(res => res.json))
+    // your results are now cached on disk at `cache/${url}/`, and will load from disk next time instead of running the thunk
+*/
+export default async function cacheThunk<T>(
   url: string,
   fn: () => Promise<T>,
   options: Options = {
@@ -51,4 +54,4 @@ module.exports = async function cacheThunk<T>(
     fs.writeFileSync(filePath, JSON.stringify(res));
     return res;
   }
-};
+}
