@@ -11,6 +11,9 @@ I often write little scripts that fetch a bunch of data and transform it for ana
 
 This is painful, since every time I re-run the script, I wait for expensive slow HTTP requests to re-fetch the same data. cache-thunk speeds up that part, making it faster for me to iterate on the data transformation code. Behold, an example!
 
+## Install
+`npm i cache-thunk`
+
 ## Example
 
 ```javascript
