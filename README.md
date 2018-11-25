@@ -14,12 +14,12 @@ This is painful, since every time I re-run the script, I wait for expensive slow
 ## Example
 
 ```javascript
-const makeCacheThunk = require('cache-thunk');
+const makeCache = require('cache-thunk');
 const fetch = require('node-fetch');
 
 const url = "http://example.com/giant-slow-request";
 const thunk = () => fetch(url).then(res => res.json());
-const cache = makeCacheThunk();
+const cache = makeCache();
 
 // the first time this runs, it will make a request to http://example.com/giant-slow-request
 // and save the results to disk
@@ -27,6 +27,12 @@ const cache = makeCacheThunk();
 // much faster!
 cache(url, thunk)
   .then(results => console.log("got my data back!");
+  
+// you can use the same cache multiple times and it'll make a separate cache file for each cache key
+const theInternet = "https://example.com/the-internet";
+cache(theInternet, () => fetch(theInternet).then(res => res.json())).then(
+  internet => console.log("got the internet", internet)
+);
 ```
 
 
